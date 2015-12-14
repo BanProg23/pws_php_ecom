@@ -125,4 +125,4 @@ WHERE p1.idProd = dc1.idProd
 AND p2.idProd = dc2.idProd
 AND dc1.idCom = dc2.idCom
 AND p1.idProd <> p2.idProd
-GROUP BY p1.idProd;
+GROUP BY p1.idProd, p2.idProd;
