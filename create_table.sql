@@ -52,3 +52,24 @@ CREATE TABLE Commande
 	PRIMARY KEY(idCom),
 	FOREIGN KEY(idClient) REFERENCES Client (idClient)
 ) Engine=InnoDB ;
+
+CREATE TABLE Proposer
+(
+	idProd1 VARCHAR(5),
+	idProd2 VARCHAR(5),
+	nbFois MEDIUMINT(4) CHECK (nbFois > 0),
+	PRIMARY KEY (idProd1, idProd2),
+	FOREIGN KEY (idProd1) REFERENCES Produit(idProd),
+	FOREIGN KEY (idProd2) REFERENCES Produit(idProd),
+) Engine=InnoDB ;
+
+CREATE TABLE DetailCommande
+(
+	idProd VARCHAR(5),
+	idCom INT(5),
+	qteCdee MEDIUMINT(4),
+	prixLigneCom INT(8,2),
+	PRIMARY KEY (idProd, idCom),
+	FOREIGN KEY (idProd) REFERENCES Produit(idProd),
+	FOREIGN KEY (idCom) REFERENCES Commande(idCom)
+) Engine=InnoDB ;
