@@ -8,8 +8,9 @@ DROP TABLE IF EXISTS Client;
 CREATE TABLE Categorie
 (
 	idCat VARCHAR(3),
-	nomCat VARCHAR(30) NOT NULL,
-	PRIMARY KEY(idCat)
+	nomCat VARCHAR(30),
+	CONSTRAINT pk_Categorie PRIMARY KEY(idCat),
+	CONSTRAINT ck_Categorie_nomCat_NN CHECK (nomCat is NOT NULL)
 ) Engine=InnoDB ;
 
 CREATE TABLE Produit
@@ -28,8 +29,8 @@ CREATE TABLE Produit
 	prixHTprod NUMERIC(7,2),
 	prixHTpromoPro NUMERIC(7,2),
 	tauxTVAprod NUMERIC(3,1),
-	PRIMARY KEY(idProd),
-	FOREIGN KEY(idCat) REFERENCES Categorie (idCat)
+	CONSTRAINT pk_Produit PRIMARY KEY(idProd),
+	CONSTRAINT fk_Produit_idCat FOREIGN KEY(idCat) REFERENCES Categorie (idCat)
 ) Engine=InnoDB ;
 
 CREATE TABLE Client
@@ -43,31 +44,33 @@ CREATE TABLE Client
 	regionClient VARCHAR(20),
 	telClient CHAR(10),
 	emailClient VARCHAR(20),
-	PRIMARY KEY(idClient)
+	CONSTRAINT pk_Client PRIMARY KEY(idClient)
 ) Engine=InnoDB ;
 
 CREATE TABLE Commande
 (
 	idCom INT(5) AUTO_INCREMENT,
 	dateCreationCom DATE,
-	idClient INT(5) NOT NULL,
+	idClient INT(5),
 	dateEnvoiCom DATE,
 	estFinie TINYINT(1),
 	idPaiement CHAR(2),
 	refPaiement VARCHAR(13),
 	totalCom NUMERIC(9,2),
-	PRIMARY KEY(idCom),
-	FOREIGN KEY(idClient) REFERENCES Client (idClient)
+	CONSTRAINT pk_Commande PRIMARY KEY(idCom),
+	CONSTRAINT fk_Commande_idClient FOREIGN KEY(idClient) REFERENCES Client (idClient),
+	CONSTRAINT ck_Commande_idClient_NN CHECK (idClient is NOT NULL)
 ) Engine=InnoDB ;
 
 CREATE TABLE Proposer
 (
 	idProd1 VARCHAR(5),
 	idProd2 VARCHAR(5),
-	nbFois MEDIUMINT(4) CHECK (nbFois > 0),
-	PRIMARY KEY (idProd1, idProd2),
-	FOREIGN KEY (idProd1) REFERENCES Produit(idProd),
-	FOREIGN KEY (idProd2) REFERENCES Produit(idProd)
+	nbFois MEDIUMINT(4),
+	CONSTRAINT pk_Proposer PRIMARY KEY (idProd1, idProd2),
+	CONSTRAINT fk_Proposer_idProd1 FOREIGN KEY (idProd1) REFERENCES Produit(idProd),
+	CONSTRAINT fk_Proposer_idProd2 FOREIGN KEY (idProd2) REFERENCES Produit(idProd),
+	CONSTRAINT ck_Proposer_nbFois_SupZ CHECK (nbFois > 0)
 ) Engine=InnoDB ;
 
 CREATE TABLE DetailCommande
@@ -76,9 +79,9 @@ CREATE TABLE DetailCommande
 	idCom INT(5),
 	qteCdee MEDIUMINT(4),
 	prixLigneCom NUMERIC(8,2),
-	PRIMARY KEY (idProd, idCom),
-	FOREIGN KEY (idProd) REFERENCES Produit(idProd),
-	FOREIGN KEY (idCom) REFERENCES Commande(idCom)
+	CONSTRAINT pk_DetailCommande PRIMARY KEY (idProd, idCom),
+	CONSTRAINT fk_DetailCommande_idProd FOREIGN KEY (idProd) REFERENCES Produit(idProd),
+	CONSTRAINT fk_DetailCommande_idCom FOREIGN KEY (idCom) REFERENCES Commande(idCom)
 ) Engine=InnoDB ;
 
  
@@ -125,4 +128,4 @@ WHERE p1.idProd = dc1.idProd
 AND p2.idProd = dc2.idProd
 AND dc1.idCom = dc2.idCom
 AND p1.idProd <> p2.idProd
-GROUP BY p1.idProd;
+GROUP BY p1.idProd, p2.idProd;
