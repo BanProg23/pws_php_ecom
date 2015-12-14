@@ -118,7 +118,7 @@ INSERT INTO detailCommande VALUES ('115', 4, 7, 8400.00);
 INSERT INTO detailCommande VALUES ('198', 4, 1, 1200.00); 
 INSERT INTO detailCommande VALUES ('302', 5, 12, 21600.00); 
 
-INSERT INTO PROPOSER
+INSERT INTO Proposer
 SELECT p1.idProd, p2.idProd, COUNT(*)
 FROM Produit p1, Produit p2, DetatilCommande dc1, DetailCommande dc2
 WHERE p1.idProd = dc1.idProd
