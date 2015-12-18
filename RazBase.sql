@@ -122,10 +122,11 @@ INSERT INTO DetailCommande VALUES ('198', 4, 1, 1200.00);
 INSERT INTO DetailCommande VALUES ('302', 5, 12, 21600.00); 
 
 INSERT INTO Proposer
-SELECT p1.idProd, p2.idProd, COUNT(*)
-FROM Produit p1, Produit p2, DetailCommande dc1, DetailCommande dc2
-WHERE p1.idProd = dc1.idProd
-AND p2.idProd = dc2.idProd
-AND dc1.idCom = dc2.idCom
-AND p1.idProd <> p2.idProd
-GROUP BY p1.idProd, p2.idProd;
+SELECT dc1.idProd, dc2.idProd, COUNT(*)
+FROM DetailCommande dc1, DetailCommande dc2
+WHERE
+dc1.idCom = dc2.idCom
+AND dc1.idProd <> dc2.idProd
+AND dc1.idCom in (select idCom from Commande where estFinie =1)
+AND dc2.idCom in (select idCom from Commande where estFinie =1)
+GROUP BY dc1.idProd, dc2.idProd
